@@ -2,8 +2,8 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>NexaPOS | Punto de Venta - Selector Fecha/Hora Nativo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>NexaPOS | Punto de Venta - Responsive Total</title>
   <style>
     * {
       margin: 0;
@@ -362,6 +362,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      flex-wrap: wrap;
     }
 
     .productos-grid {
@@ -409,6 +410,7 @@
       color: #1e2a3a;
       margin-bottom: 6px;
       line-height: 1.3;
+      text-align: center;
     }
     .producto-precio {
       background: #ffe8e5;
@@ -462,7 +464,7 @@
     .modo-pedido {
       display: flex;
       gap: 6px;
-      flex-wrap: nowrap;
+      flex-wrap: wrap;
       margin-bottom: 8px;
     }
     .modo-opcion {
@@ -493,6 +495,7 @@
       background: rgba(255,255,255,0.08);
       padding: 5px 10px;
       border-radius: 6px;
+      flex-wrap: wrap;
     }
     .campo-etiqueta {
       font-size: 0.7rem;
@@ -509,6 +512,7 @@
       font-size: 0.7rem;
       outline: none;
       border-radius: 4px;
+      min-width: 0;
     }
     .campo-input:focus {
       border-color: #f39c12;
@@ -516,11 +520,12 @@
     .campo-input::placeholder {
       color: rgba(255,255,255,0.5);
     }
-    /* Estilo para el input datetime-local */
     .input-wrapper {
       position: relative;
       display: inline-block;
       width: 100%;
+      min-width: 0;
+      flex: 1;
     }
     .datetime-input {
       width: 100%;
@@ -550,6 +555,7 @@
       color: #f39c12;
       margin-top: 4px;
       padding-left: 0px;
+      width: 100%;
     }
     .mesa-selector {
       flex: 1;
@@ -582,6 +588,8 @@
       display: flex;
       justify-content: space-between;
       font-size: 0.85rem;
+      flex-wrap: wrap;
+      gap: 5px;
     }
     .item-mod {
       font-size: 0.65rem;
@@ -761,37 +769,65 @@
     }
     hr { margin: 12px 0; }
 
+    /* ============================================ */
+    /* RESPONSIVE - DISPOSITIVOS MÓVILES */
+    /* ============================================ */
     @media (max-width: 900px) {
       html, body { overflow-y: auto; height: auto; }
       .nexa-dashboard { height: auto; min-height: 100vh; padding: 12px; overflow-y: visible; }
       .pos-grid { flex-direction: column; gap: 20px; overflow-y: visible; }
       .menu-panel { height: auto; min-height: 400px; }
-      .cart-panel { height: auto; min-height: 350px; min-width: auto; }
+      .cart-panel { height: auto; min-height: 350px; min-width: auto; width: 100%; }
       .productos-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
       .fullscreen-btn { display: none; }
       .categorias-center-btn { display: none; }
       .hamburger-mobile-btn { display: block; }
-      .modo-pedido { flex-wrap: wrap; justify-content: center; }
-      .cart-panel { flex: none; width: 100%; }
-      .campo-fila { flex-wrap: wrap; }
-      .campo-etiqueta { min-width: 100%; }
+      .modo-pedido { justify-content: center; }
+      .campo-fila { flex-direction: column; align-items: stretch; }
+      .campo-etiqueta { min-width: auto; }
       .filtro-header { flex-direction: column; align-items: stretch; }
-      .filtro-izquierda { flex-direction: column; align-items: stretch; }
+      .filtro-izquierda { flex-direction: column; align-items: stretch; gap: 10px; }
       .buscador-container { width: 100%; }
       .botones-modulos { display: none; }
       .modulos-hamburger-btn { display: block; }
       .filtro-header { flex-direction: row; justify-content: space-between; align-items: center; }
       .filtro-izquierda { flex: 1; flex-direction: row; flex-wrap: wrap; justify-content: center; }
-      .filtro-titulo { white-space: nowrap; }
+      .filtro-titulo { white-space: nowrap; font-size: 0.7rem; }
+      .buscador-container { width: auto; flex: 1; min-width: 150px; }
+      .buscador-input { font-size: 0.7rem; padding: 6px 10px; }
+      .producto-imagen { width: 55px; height: 55px; font-size: 1.8rem; }
+      .producto-nombre { font-size: 0.75rem; }
+      .cart-header-top { flex-direction: column; align-items: stretch; }
+      .cajero-derecha { justify-content: center; }
+      .modo-opcion { font-size: 0.65rem; padding: 4px 8px; white-space: nowrap; }
     }
+
     @media (max-width: 600px) {
       .productos-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
       .producto-imagen { width: 50px; height: 50px; font-size: 1.6rem; }
       .producto-nombre { font-size: 0.7rem; }
-      .scroll-top-btn { width: 45px; height: 45px; font-size: 1.3rem; }
-      .filtro-header { flex-wrap: wrap; }
-      .filtro-izquierda { flex-direction: column; align-items: center; gap: 10px; }
-      .filtro-titulo { text-align: center; }
+      .scroll-top-btn { width: 45px; height: 45px; font-size: 1.3rem; bottom: 15px; right: 15px; }
+      .filtro-header { flex-wrap: wrap; flex-direction: column; }
+      .filtro-izquierda { flex-direction: column; align-items: center; gap: 10px; width: 100%; }
+      .filtro-titulo { text-align: center; white-space: normal; }
+      .buscador-container { width: 100%; }
+      .modulos-hamburger-btn { margin-left: auto; }
+      .categoria-header { font-size: 0.85rem; }
+      .campo-etiqueta { font-size: 0.65rem; }
+      .campo-input, .datetime-input { font-size: 0.65rem; padding: 5px 8px; }
+      .icon-calendar { font-size: 0.9rem; right: 8px; }
+      .fecha-texto-legible { font-size: 0.6rem; }
+    }
+
+    @media (max-width: 480px) {
+      .nexa-dashboard { padding: 8px; }
+      .panel-title { padding: 10px 12px; font-size: 0.95rem; }
+      .productos-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
+      .producto-imagen { width: 45px; height: 45px; font-size: 1.4rem; }
+      .producto-nombre { font-size: 0.65rem; }
+      .producto-precio { font-size: 0.7rem; padding: 3px 8px; }
+      .modo-opcion { font-size: 0.6rem; padding: 3px 6px; }
+      .btn-pagar, .btn-limpiar { padding: 8px; font-size: 0.8rem; }
     }
   </style>
 </head>
@@ -816,7 +852,7 @@
           <div class="filtro-izquierda">
             <div class="filtro-titulo">📌 FILTRAR PRODUCTOS</div>
             <div class="buscador-container">
-              <input type="text" class="buscador-input" id="buscadorInput" placeholder="🔍 Buscar producto por nombre...">
+              <input type="text" class="buscador-input" id="buscadorInput" placeholder="🔍 Buscar producto...">
             </div>
           </div>
           <div class="botones-modulos" id="botonesModulos">
@@ -896,6 +932,7 @@
 </div>
 
 <script>
+  // Datos completos (categorías, productos, complementos, variantes)
   const categoriasInfo = [
     { id: "todas", nombre: "📋 Todas las categorías" },
     { id: "arroz", nombre: "🍚 Arroz Chino" },
@@ -1202,14 +1239,14 @@
     const container = document.getElementById("productosContainer");
     const agrupados = obtenerProductosAgrupados();
     if (Object.keys(agrupados).length === 0) {
-      container.innerHTML = "<div style='padding:40px; text-align:center; color:gray;'>No hay productos que coincidan con tu búsqueda</div>";
+      container.innerHTML = "<div style='padding:40px; text-align:center; color:gray;'>No hay productos</div>";
       return;
     }
     let html = "";
     for (const [catId, productos] of Object.entries(agrupados)) {
       const nombreCat = nombreCategoria[catId] || catId;
       const icono = iconoPorCategoria[catId] || "🍽️";
-      html += `<div class="categoria-grupo"><div class="categoria-header"><span>${icono}</span><span>${nombreCat}</span><span style="font-size:0.7rem; color:#6c757d;">(${productos.length} productos)</span></div><div class="productos-grid" id="grid-${catId}"></div></div>`;
+      html += `<div class="categoria-grupo"><div class="categoria-header"><span>${icono}</span><span>${nombreCat}</span><span style="font-size:0.7rem; color:#6c757d;">(${productos.length})</span></div><div class="productos-grid" id="grid-${catId}"></div></div>`;
     }
     container.innerHTML = html;
     for (const [catId, productos] of Object.entries(agrupados)) {
@@ -1251,7 +1288,7 @@
     if (modoPedido === "para_llevar") {
       container.innerHTML = `
         <div class="campos-cliente">
-          <div class="campo-fila"><span class="campo-etiqueta">Nombre:</span><input type="text" id="clienteNombre" class="campo-input" placeholder="Nombre del cliente" value="${clienteNombre}"></div>
+          <div class="campo-fila"><span class="campo-etiqueta">Nombre:</span><input type="text" id="clienteNombre" class="campo-input" placeholder="Nombre" value="${clienteNombre}"></div>
           <div class="campo-fila"><span class="campo-etiqueta">Teléfono:</span><input type="tel" id="clienteTelefono" class="campo-input" placeholder="Teléfono" value="${clienteTelefono}"></div>
         </div>
       `;
@@ -1260,9 +1297,9 @@
     } else if (modoPedido === "domicilio") {
       container.innerHTML = `
         <div class="campos-cliente">
-          <div class="campo-fila"><span class="campo-etiqueta">Nombre:</span><input type="text" id="clienteNombre" class="campo-input" placeholder="Nombre del cliente" value="${clienteNombre}"></div>
+          <div class="campo-fila"><span class="campo-etiqueta">Nombre:</span><input type="text" id="clienteNombre" class="campo-input" placeholder="Nombre" value="${clienteNombre}"></div>
           <div class="campo-fila"><span class="campo-etiqueta">Teléfono:</span><input type="tel" id="clienteTelefono" class="campo-input" placeholder="Teléfono" value="${clienteTelefono}"></div>
-          <div class="campo-fila"><span class="campo-etiqueta">Dirección:</span><input type="text" id="clienteDireccion" class="campo-input" placeholder="Dirección de entrega" value="${clienteDireccion}"></div>
+          <div class="campo-fila"><span class="campo-etiqueta">Dirección:</span><input type="text" id="clienteDireccion" class="campo-input" placeholder="Dirección" value="${clienteDireccion}"></div>
         </div>
       `;
       document.getElementById("clienteNombre")?.addEventListener("input", (e) => clienteNombre = e.target.value);
@@ -1290,7 +1327,7 @@
       
       container.innerHTML = `
         <div class="campos-cliente">
-          <div class="campo-fila"><span class="campo-etiqueta">Nombre:</span><input type="text" id="clienteNombre" class="campo-input" placeholder="Nombre del cliente" value="${clienteNombre}"></div>
+          <div class="campo-fila"><span class="campo-etiqueta">Nombre:</span><input type="text" id="clienteNombre" class="campo-input" placeholder="Nombre" value="${clienteNombre}"></div>
           <div class="campo-fila"><span class="campo-etiqueta">Teléfono:</span><input type="tel" id="clienteTelefono" class="campo-input" placeholder="Teléfono" value="${clienteTelefono}"></div>
           <div class="campo-fila"><span class="campo-etiqueta">Fecha/Hora:</span>
             <div class="input-wrapper">
@@ -1306,7 +1343,6 @@
       
       const fechaInput = document.getElementById("fechaHoraInput");
       const fechaLegibleSpan = document.getElementById("fechaLegible");
-      
       if (fechaInput && fechaLegibleSpan) {
         fechaInput.addEventListener("change", (e) => {
           reservaFechaHora = e.target.value;
@@ -1392,21 +1428,17 @@
     modulosOverlay.onclick = (e) => { if (e.target === modulosOverlay) closeModulos(); };
     
     const moduloActions = {
-      productos: () => alert("📦 Módulo de Productos - Gestión de inventario y precios"),
-      clientes: () => alert("👥 Módulo de Clientes - Gestión de clientes y contactos"),
-      creditos: () => alert("💰 Módulo de Créditos - Administración de cuentas por cobrar"),
-      reservas: () => alert("📅 Módulo de Reservas - Gestión de reservaciones"),
-      caja: () => alert("🧾 Módulo de Caja - Corte de caja y movimientos")
+      productos: () => alert("📦 Módulo de Productos"),
+      clientes: () => alert("👥 Módulo de Clientes"),
+      creditos: () => alert("💰 Módulo de Créditos"),
+      reservas: () => alert("📅 Módulo de Reservas"),
+      caja: () => alert("🧾 Módulo de Caja")
     };
-    
-    document.querySelectorAll(".btn-modulo").forEach(btn => {
+    document.querySelectorAll(".btn-modulo, .modulos-sidebar-btn").forEach(btn => {
       const modulo = btn.getAttribute("data-modulo");
-      btn.onclick = () => { moduloActions[modulo](); };
-    });
-    
-    document.querySelectorAll(".modulos-sidebar-btn").forEach(btn => {
-      const modulo = btn.getAttribute("data-modulo");
-      btn.onclick = () => { moduloActions[modulo](); closeModulos(); };
+      if (modulo && moduloActions[modulo]) {
+        btn.onclick = (e) => { e.stopPropagation(); moduloActions[modulo](); if (btn.classList.contains("modulos-sidebar-btn")) closeModulos(); };
+      }
     });
   }
 
