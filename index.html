@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>NexaPOS | Punto de Venta - Selector Fecha/Hora</title>
+  <title>NexaPOS | Punto de Venta - Selector Fecha/Hora Funcional</title>
   <style>
     * {
       margin: 0;
@@ -516,7 +517,6 @@
     .campo-input::placeholder {
       color: rgba(255,255,255,0.5);
     }
-    /* Nuevo estilo para selector de fecha con icono */
     .fecha-selector-wrapper {
       flex: 1;
       display: flex;
@@ -532,6 +532,7 @@
       color: #f39c12;
       font-size: 0.7rem;
       padding: 4px 0;
+      cursor: pointer;
     }
     .fecha-icono-btn {
       background: none;
@@ -776,7 +777,8 @@
       .botones-modulos { display: none; }
       .modulos-hamburger-btn { display: block; }
       .filtro-header { flex-direction: row; justify-content: space-between; align-items: center; }
-      .filtro-izquierda { flex: 1; }
+      .filtro-izquierda { flex: 1; flex-direction: row; flex-wrap: wrap; justify-content: center; }
+      .filtro-titulo { white-space: nowrap; }
     }
     @media (max-width: 600px) {
       .productos-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
@@ -784,6 +786,8 @@
       .producto-nombre { font-size: 0.7rem; }
       .scroll-top-btn { width: 45px; height: 45px; font-size: 1.3rem; }
       .filtro-header { flex-wrap: wrap; }
+      .filtro-izquierda { flex-direction: column; align-items: center; gap: 10px; }
+      .filtro-titulo { text-align: center; }
     }
   </style>
 </head>
@@ -1302,11 +1306,18 @@
       
       if (selectorInput && fechaTexto && abrirBtn) {
         selectorInput.value = reservaFechaHora;
-        abrirBtn.onclick = () => selectorInput.showPicker();
-        selectorInput.onchange = (e) => {
-          reservaFechaHora = e.target.value;
+        
+        const actualizarDesdeSelector = () => {
+          reservaFechaHora = selectorInput.value;
           fechaTexto.textContent = formatearFechaHoraHN(reservaFechaHora);
         };
+        
+        abrirBtn.onclick = (e) => {
+          e.stopPropagation();
+          selectorInput.showPicker();
+        };
+        
+        selectorInput.onchange = actualizarDesdeSelector;
       }
     } else {
       container.innerHTML = "";
