@@ -1,334 +1,1440 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NexaPOS - Especificación Funcional Por Jorge Lemus</title>
-    <style>
-        :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #c0392b;
-            --text-color: #333333;
-            --bg-light: #f8f9fa;
-            --border-color: #bdc3c7;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>NexaPOS | Punto de Venta - Selector Fecha/Hora</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: var(--text-color);
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 40px 20px;
-            background-color: #ffffff;
-        }
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
 
-        h1 {
-            color: var(--primary-color);
-            font-size: 2.5rem;
-            border-bottom: 3px solid var(--secondary-color);
-            padding-bottom: 10px;
-            margin-bottom: 5px;
-            text-align: center;
-        }
+    body {
+      background: #eef2f5;
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+    }
 
-        h2 {
-            color: var(--secondary-color);
-            font-size: 1.8rem;
-            margin-top: 30px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 5px;
-        }
+    .nexa-dashboard {
+      height: 100vh;
+      width: 100vw;
+      max-width: none;
+      margin: 0;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
 
-        h3 {
-            color: var(--primary-color);
-            font-size: 1.3rem;
-            margin-top: 20px;
-        }
+    .pos-grid {
+      display: flex;
+      flex: 1;
+      gap: 20px;
+      min-height: 0;
+      overflow: hidden;
+    }
 
-        .subtitle {
-            font-size: 1.2rem;
-            color: #555;
-            text-align: center;
-            margin-top: 0;
-            margin-bottom: 40px;
-            font-style: italic;
-        }
+    .menu-panel {
+      flex: 3;
+      background: white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      height: 100%;
+    }
 
-        hr {
-            border: 0;
-            height: 1px;
-            background: var(--border-color);
-            margin: 30px 0;
-        }
+    .panel-title {
+      background: #1e2a3a;
+      color: white;
+      padding: 12px 20px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border-bottom: 3px solid #f39c12;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .panel-title-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    .panel-title span {
+      color: #f39c12;
+    }
 
-        .index-box {
-            background-color: var(--bg-light);
-            border-left: 5px solid var(--primary-color);
-            padding: 20px;
-            margin-bottom: 30px;
-            border-radius: 4px;
-        }
+    .categorias-center-btn {
+      background: rgba(255,255,255,0.15);
+      border: none;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      padding: 6px 16px;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 6px;
+    }
+    .categorias-center-btn:hover {
+      background: rgba(255,255,255,0.25);
+    }
 
-        .index-box ul {
-            margin: 0;
-            padding-left: 20px;
-        }
+    .hamburger-mobile-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.6rem;
+      cursor: pointer;
+      padding: 5px 10px;
+      transition: background 0.2s;
+    }
+    .hamburger-mobile-btn:hover {
+      background: rgba(255,255,255,0.15);
+    }
 
-        .index-box li {
-            margin-bottom: 8px;
-        }
+    .fullscreen-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 5px 10px;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      border-radius: 6px;
+    }
+    .fullscreen-btn:hover {
+      background: rgba(255,255,255,0.15);
+    }
 
-        a {
-            color: var(--primary-color);
-            text-decoration: none;
-            font-weight: 600;
-        }
+    .filtro-wrapper {
+      background: #fcf9f5;
+      border-bottom: 1px solid #e9ecef;
+      flex-shrink: 0;
+      padding: 12px 20px;
+    }
+    .filtro-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .filtro-izquierda {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      flex: 1;
+    }
+    .filtro-titulo {
+      font-weight: 800;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #5a6e7c;
+      white-space: nowrap;
+    }
+    .buscador-container {
+      width: 260px;
+    }
+    .buscador-input {
+      width: 100%;
+      padding: 8px 14px;
+      border: 1px solid #ddd;
+      font-size: 0.8rem;
+      outline: none;
+      transition: all 0.2s;
+      background: white;
+    }
+    .buscador-input:focus {
+      border-color: #c0392b;
+      box-shadow: 0 0 0 2px rgba(192,57,43,0.2);
+    }
+    .botones-modulos {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .btn-modulo {
+      background: #2c3e50;
+      border: none;
+      color: white;
+      padding: 6px 14px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-radius: 4px;
+    }
+    .btn-modulo:hover {
+      background: #c0392b;
+      transform: translateY(-1px);
+    }
+    .modulos-hamburger-btn {
+      display: none;
+      background: #2c3e50;
+      border: none;
+      color: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 6px 12px;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+    .modulos-hamburger-btn:hover {
+      background: #c0392b;
+    }
 
-        a:hover {
-            text-decoration: underline;
-            color: var(--secondary-color);
-        }
+    .modulos-overlay {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1001;
+      display: none;
+      align-items: flex-start;
+      justify-content: flex-end;
+    }
+    .modulos-overlay.active {
+      display: flex;
+    }
+    .modulos-sidebar {
+      width: 280px;
+      height: 100%;
+      background: #1e2a3a;
+      box-shadow: -2px 0 12px rgba(0,0,0,0.3);
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+    .modulos-overlay.active .modulos-sidebar {
+      transform: translateX(0);
+    }
+    .modulos-sidebar-header {
+      padding: 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      color: white;
+      font-weight: bold;
+      font-size: 1.1rem;
+      background: #c0392b;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modulos-sidebar-botones {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .modulos-sidebar-btn {
+      background: rgba(255,255,255,0.1);
+      border: none;
+      padding: 12px 16px;
+      border-radius: 12px;
+      color: white;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: left;
+    }
+    .modulos-sidebar-btn:hover {
+      background: rgba(255,255,255,0.25);
+    }
+    .close-modulos-sidebar {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 5px;
+    }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            background-color: #ffffff;
-        }
+    .menu-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      display: none;
+      align-items: flex-start;
+      justify-content: flex-start;
+    }
+    .menu-overlay.active {
+      display: flex;
+    }
+    .sidebar-menu {
+      width: 280px;
+      height: 100%;
+      background: #1e2a3a;
+      box-shadow: 2px 0 12px rgba(0,0,0,0.3);
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+    .menu-overlay.active .sidebar-menu {
+      transform: translateX(0);
+    }
+    .sidebar-header {
+      padding: 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      color: white;
+      font-weight: bold;
+      font-size: 1.1rem;
+      background: #c0392b;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .sidebar-categorias {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .sidebar-categoria {
+      background: rgba(255,255,255,0.1);
+      border: none;
+      padding: 12px 16px;
+      color: white;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: left;
+    }
+    .sidebar-categoria.activa {
+      background: #c0392b;
+      color: white;
+    }
+    .sidebar-categoria:hover {
+      background: rgba(255,255,255,0.25);
+    }
+    .close-sidebar {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 5px;
+    }
 
-        th, td {
-            border: 1px solid var(--border-color);
-            padding: 12px;
-            text-align: left;
-        }
+    .productos-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      min-height: 0;
+    }
 
-        th {
-            background-color: var(--primary-color);
-            color: white;
-        }
+    .categoria-grupo {
+      margin-bottom: 28px;
+    }
+    .categoria-header {
+      background: #f8f9fa;
+      padding: 10px 16px;
+      margin-bottom: 12px;
+      border-left: 4px solid #c0392b;
+      font-weight: 800;
+      font-size: 1rem;
+      color: #1e2a3a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-        tr:nth-child(even) {
-            background-color: var(--bg-light);
-        }
+    .productos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+    }
 
-        ul {
-            padding-left: 25px;
-        }
+    .producto-card {
+      background: #ffffff;
+      border: 1px solid #e9ecef;
+      padding: 14px 12px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .producto-card:hover {
+      border-color: #c0392b;
+      background: #fffaf7;
+      transform: translateY(-3px);
+      box-shadow: 0 6px 14px rgba(192,57,43,0.12);
+    }
+    .producto-imagen {
+      width: 65px;
+      height: 65px;
+      background: #f8f9fa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+      font-size: 2.2rem;
+      transition: all 0.2s;
+    }
+    .producto-card:hover .producto-imagen {
+      background: #c0392b20;
+      transform: scale(1.02);
+    }
+    .producto-nombre {
+      font-weight: 800;
+      font-size: 0.85rem;
+      color: #1e2a3a;
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+    .producto-precio {
+      background: #ffe8e5;
+      padding: 4px 12px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      color: #c0392b;
+      display: inline-block;
+    }
 
-        li {
-            margin-bottom: 5px;
-        }
+    .cart-panel {
+      flex: 1.4;
+      min-width: 360px;
+      background: white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+    }
+    .cart-header {
+      background: #2c3e50;
+      color: white;
+      padding: 12px 16px;
+      flex-shrink: 0;
+    }
+    .cart-header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .cart-header-top h3 {
+      font-size: 0.95rem;
+    }
+    .cajero-derecha {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      background: rgba(255,255,255,0.1);
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+    .cajero-icon {
+      color: #f39c12;
+      font-size: 0.9rem;
+    }
+    .modo-pedido {
+      display: flex;
+      gap: 6px;
+      flex-wrap: nowrap;
+      margin-bottom: 8px;
+    }
+    .modo-opcion {
+      background: rgba(255,255,255,0.15);
+      border: none;
+      color: #ddd;
+      padding: 5px 12px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .modo-opcion.activo {
+      background: #f39c12;
+      color: #1e2a3a;
+    }
+    .campos-cliente {
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .campo-fila {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,0.08);
+      padding: 5px 10px;
+      border-radius: 6px;
+    }
+    .campo-etiqueta {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #f39c12;
+      min-width: 65px;
+    }
+    .campo-input {
+      flex: 1;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 6px 10px;
+      color: white;
+      font-size: 0.7rem;
+      outline: none;
+      border-radius: 4px;
+    }
+    .campo-input:focus {
+      border-color: #f39c12;
+    }
+    .campo-input::placeholder {
+      color: rgba(255,255,255,0.5);
+    }
+    /* Nuevo estilo para selector de fecha con icono */
+    .fecha-selector-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 4px;
+      padding: 4px 8px;
+    }
+    .fecha-texto {
+      flex: 1;
+      color: #f39c12;
+      font-size: 0.7rem;
+      padding: 4px 0;
+    }
+    .fecha-icono-btn {
+      background: none;
+      border: none;
+      color: #f39c12;
+      font-size: 1rem;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+    .fecha-icono-btn:hover {
+      background: rgba(255,255,255,0.2);
+    }
+    .mesa-selector {
+      flex: 1;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 6px 10px;
+      color: white;
+      font-size: 0.7rem;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .mesa-selector option {
+      background: #2c3e50;
+      color: white;
+    }
+    .cart-items {
+      flex: 1;
+      padding: 12px;
+      overflow-y: auto;
+      min-height: 0;
+    }
+    .cart-item {
+      background: #fef9f5;
+      margin-bottom: 10px;
+      padding: 10px;
+      border-left: 3px solid #c0392b;
+    }
+    .item-title {
+      font-weight: 800;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+    }
+    .item-mod {
+      font-size: 0.65rem;
+      color: #6c757d;
+      margin-top: 5px;
+      padding-left: 8px;
+      border-left: 2px solid #ffbcac;
+    }
+    .item-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 6px;
+    }
+    .edit-btn, .remove-btn {
+      background: none;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 0.7rem;
+      padding: 4px 8px;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+    .edit-btn:hover {
+      background: #e9ecef;
+    }
+    .remove-btn:hover {
+      background: #ffe8e5;
+    }
+    .edit-btn { color: #2c3e50; }
+    .remove-btn { color: #a94442; }
+    .cart-footer {
+      padding: 14px;
+      border-top: 2px dashed #dee2e6;
+      flex-shrink: 0;
+    }
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 1.2rem;
+      font-weight: 800;
+    }
+    .btn-pagar, .btn-limpiar {
+      width: 100%;
+      border: none;
+      padding: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .btn-pagar { background: #27ae60; color: white; }
+    .btn-limpiar { background: #e2e6ea; }
 
-        .ticket-preview {
-            background-color: #222;
-            color: #f1f1f1;
-            font-family: 'Courier New', Courier, monospace;
-            padding: 25px;
-            border-radius: 5px;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
-            white-space: pre;
-            overflow-x: auto;
-            font-size: 0.95rem;
-            line-height: 1.4;
-        }
+    .scroll-top-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      background: rgba(44, 62, 80, 0.7);
+      backdrop-filter: blur(4px);
+      color: white;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      z-index: 999;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    .scroll-top-btn.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    .scroll-top-btn:hover {
+      background: #c0392b;
+      transform: scale(1.05);
+    }
 
-        .highlight-box {
-            background-color: #fff9e6;
-            border-left: 5px solid #f39c12;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 4px;
-        }
+    .modal-backdrop {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(3px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+    }
+    .modal-card {
+      background: white;
+      max-width: 460px;
+      width: 90%;
+      overflow: hidden;
+      box-shadow: 0 20px 35px rgba(0,0,0,0.3);
+      animation: fadeInUp 0.2s ease;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .modal-header {
+      background: #1e2a3a;
+      color: white;
+      padding: 14px 18px;
+      font-weight: 700;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .modal-body {
+      padding: 18px;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .modal-footer {
+      padding: 14px 18px;
+      border-top: 1px solid #e9ecef;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .btn-opcion {
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+      padding: 8px 16px;
+      margin: 5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.1s;
+      font-size: 0.8rem;
+      border-radius: 40px;
+    }
+    .btn-opcion:hover, .btn-opcion.selected {
+      background: #c0392b;
+      color: white;
+      border-color: #c0392b;
+    }
+    .btn-confirmar {
+      background: #27ae60;
+      color: white;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 40px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .btn-cancelar {
+      background: #e2e6ea;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 40px;
+      cursor: pointer;
+    }
+    .nota-input-modal {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      border-radius: 40px;
+      margin-top: 15px;
+      font-size: 0.8rem;
+    }
+    .complementos-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    hr { margin: 12px 0; }
 
-        @media print {
-            body {
-                padding: 0;
-            }
-            .ticket-preview {
-                background-color: #fff;
-                color: #000;
-                border: 1px solid #000;
-                box-shadow: none;
-            }
-        }
-    </style>
+    @media (max-width: 900px) {
+      html, body { overflow-y: auto; height: auto; }
+      .nexa-dashboard { height: auto; min-height: 100vh; padding: 12px; overflow-y: visible; }
+      .pos-grid { flex-direction: column; gap: 20px; overflow-y: visible; }
+      .menu-panel { height: auto; min-height: 400px; }
+      .cart-panel { height: auto; min-height: 350px; min-width: auto; }
+      .productos-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+      .fullscreen-btn { display: none; }
+      .categorias-center-btn { display: none; }
+      .hamburger-mobile-btn { display: block; }
+      .modo-pedido { flex-wrap: wrap; justify-content: center; }
+      .cart-panel { flex: none; width: 100%; }
+      .campo-fila { flex-wrap: wrap; }
+      .campo-etiqueta { min-width: 100%; }
+      .filtro-header { flex-direction: column; align-items: stretch; }
+      .filtro-izquierda { flex-direction: column; align-items: stretch; }
+      .buscador-container { width: 100%; }
+      .botones-modulos { display: none; }
+      .modulos-hamburger-btn { display: block; }
+      .filtro-header { flex-direction: row; justify-content: space-between; align-items: center; }
+      .filtro-izquierda { flex: 1; }
+    }
+    @media (max-width: 600px) {
+      .productos-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+      .producto-imagen { width: 50px; height: 50px; font-size: 1.6rem; }
+      .producto-nombre { font-size: 0.7rem; }
+      .scroll-top-btn { width: 45px; height: 45px; font-size: 1.3rem; }
+      .filtro-header { flex-wrap: wrap; }
+    }
+  </style>
 </head>
 <body>
-
-    <h1>NexaPOS ERP/POS • Especificación Funcional</h1>
-    <div class="subtitle">Módulo de Productos y Lógica de Venta Gastronómica, Por: Jorge Lemus 3386 3017</div>
-
-    <div class="index-box">
-        <h3>Índice de Contenidos</h3>
-        <ul>
-            <li><a href="#section1">1. Clarificación de Arquitectura: Complementos vs. Variantes</a></li>
-            <li><a href="#section2">2. Gestión Centralizada de Complementos (Relación N:M)</a></li>
-            <li><a href="#section3">3. Productos Compuestos (Combos) y su Flexibilidad</a></li>
-            <li><a href="#section4">4. Emulación de Venta: Recibo Detallado (10 Pedidos)</a></li>
-            <li><a href="#section5">5. Conclusión de Arquitectura</a></li>
-        </ul>
-    </div>
-
-    <hr>
-
-    <div id="section1">
-        <h2>1. Clarificación de Arquitectura: Complementos vs. Variantes</h2>
-        <p>Para evitar confusiones comunes en el desarrollo de sistemas POS, es fundamental establecer que <strong>un complemento y una variante no son lo mismo</strong>, aunque ambos modifiquen el producto final. Cada uno cumple un rol operativo y financiero distinto en la cocina y en la caja:</p>
-        
-        <table>
-            <thead>
-                <tr>
-                    <th>Característica</th>
-                    <th>Variantes (Grupos de Modificación)</th>
-                    <th>Complementos (Extras / Adicionales)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><strong>Definición</strong></td>
-                    <td>Opciones de preparación o acompañamientos que <strong>definen la naturaleza del plato</strong>. Un producto <em>puede</em> tener una o más variantes seleccionadas si pertenece a un grupo obligatorio. Puede ser por ejemplo variante 1: carne de res o cerdo, variante 2: arroz o frijoles.</td>
-                    <td>Agregados opcionales que el cliente decide sumar al plato. <strong>No son obligatorios</strong> para despachar el producto, pero si quiere se le agrega. Por ejemplo: extra carne +L50.</td>
-                </tr>
-                <tr>
-                    <td><strong>Comportamiento del Costo</strong></td>
-                    <td><strong>Pueden costar L0.00</strong>. Las variantes base ya vienen incluidas en el precio del plato. Cambiar a variantes "Premium" podría generar un costo incremental. Ejemplo: cambiar de carne de cerdo a carne de res podría aumentar el valor, pero cambiar de arroz a frijoles no aumentaría su valor.</td>
-                    <td><strong>En su mayoría representan un costo adicional</strong> que se suma de manera neta al valor del plato, mas sin embargo la fortaleza de esta característica es que puede estar asignada directamente a uno o más productos al igual que a múltiples categorías a la misma vez.</td>
-                </tr>
-                <tr>
-                    <td><strong>Flujo de Selección</strong></td>
-                    <td>Excluyente dentro de su grupo (ej. O eliges Arroz Blanco o eliges Arroz Chino; eliges carne de cerdo o eliges carne de res, no ambos como base).</td>
-                    <td>Multiselección (ej. Un Arroz Chino puede llevar Extra Pollo, Extra Carne y Extra Camarón a la vez) pero lo que destaca es que los complementos son opciones (extras) que agrega el cliente si él quiere, pero no es obligatorio que decida hacerlo.</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <h3>El Caso Práctico: Lomito con Vegetales (L275)</h3>
-        <ul>
-            <li><strong>Variante por Defecto (Costo L0.00):</strong> El plato incluye de forma nativa <strong>Arroz Blanco</strong>. El precio se mantiene en <strong>L275.00</strong>.</li>
-            <li><strong>Variante Premium (Costo +L75.00):</strong> Si el cliente prefiere cambiar su acompañamiento a <strong>Arroz Chino</strong>, el sistema sustituye el Arroz Blanco y aplica el recargo correspondiente, pasando el plato a costar <strong>L350.00</strong>, lo que por transparencia debe agregar una nota automática explicando que el plato costaba L275.00 pero el arroz chino le sumó L75.00, así resumiría por qué ahora en total en el recibo dice (L350.00).</li>
-        </ul>
-    </div>
-
-    <hr>
-
-    <div id="section2">
-        <h2>2. Gestión Centralizada de Complementos (Relación N:M)</h2>
-        <p>El software maneja los complementos bajo el principio de <strong>"Creación Única, Relación Múltiple"</strong>. Esto significa que un complemento no se duplica en la base de datos pero sí se ofrece en diferentes secciones del menú (mas sin embargo estos nunca se venden solos, siempre son complementos de un producto existente).</p>
-        
-        <h3>Reglas de Negocio para la Edición y Asociación:</h3>
-        <ul>
-            <li><strong>Asociación Masiva:</strong> Al crear un complemento como <code>Extra Vegetales (+L20)</code>, el administrador puede marcar con un solo <em>clic</em> que esté disponible para la <strong>Categoría: Comida China</strong> entera <strong>(o múltiples categorías)</strong>, o además seleccionar individualmente los productos con los que se relaciona (<code>Arroz Chino</code>, <code>Chop Suey</code> y <code>Lomito con Vegetales</code> <code>etc.</code>).</li>
-            <li><strong>Edición Centralizada:</strong> Si el precio de la proteína sube y el <code>Extra Carne</code> pasa de L50 a L60, <strong>se edita una sola vez</strong> en el catálogo de complementos. Automáticamente, todos los productos vinculados (<code>Categorías</code>, <code>Arroz Chino</code> y <code>Chop Suey</code> <strong>que estén relacionados</strong>) reflejarán el nuevo precio en el POS.</li>
-            <li><strong>Desvinculación:</strong> Si se decide que un producto ya no debe permitir un complemento, se ingresa a la edición del complemento y se desmarca dicho producto, rompiendo la relación en la base de datos sin afectar a los demás elementos con los que está relacionado.</li>
-        </ul>
-    </div>
-
-    <hr>
-
-    <div id="section3">
-        <h2>3. Productos Compuestos (Combos) y su Flexibilidad</h2>
-        <p>Un <strong>Producto Compuesto</strong> es una entidad comercial totalmente diferente. No es un plato con modificaciones individuales; es un paquete (Combo) que <strong>se compone de múltiples productos independientes</strong> que ya existen en el catálogo general.</p>
-
-        <h3>Características Principales:</h3>
-        <ul>
-            <li><strong>Inventario e Ingredientes:</strong> Al venderse, el sistema descuenta del inventario las porciones correspondientes a cada subproducto integrado de forma automática.</li>
-            <li><strong>Precio Cerrado / Promocional:</strong> El costo total del combo suele ser menor que la suma de sus partes por separado para incentivar la venta (ej. <em>Combo Ejecutivo a L299</em>).</li>
-        </ul>
-
-        <h3>Flexibilidad en el POS (Heredabilidad):</h3>
-        <p>El hecho de ser un Producto Compuesto <strong>no lo exime de la lógica de variantes, complementos o notas</strong>. Si un Combo Ejecutivo incluye un <em>Arroz Chino</em>, el cajero debe ser capaz de:</p>
-        <ul>
-            <li>Aplicarle una <strong>Nota</strong> al combo global o al ítem específico (<em>ej. "Coca Cola sin hielo"</em>, <em>"Arroz chino sin cebolla"</em>).</li>
-            <li>Agregarle un <strong>Complemento</strong> con costo a uno de sus componentes (<em>ej. Sumar Extra Pollo al Arroz Chino incluido en el combo</em>), lo cual deberá afectar el precio del combo.</li>
-        </ul>
-    </div>
-
-    <hr>
-
-    <div id="section4">
-        <h2>4. Emulación de Venta: Recibo Detallado (10 Pedidos)</h2>
-        <p>Para validar la solidez de la arquitectura y las reglas de negocio planteadas, se presenta la simulación de una comanda de mesa con <strong>10 pedidos</strong>. Esta simulación demuestra todas las combinaciones posibles de Productos Simples, Compuestos, Variantes, Complementos y Notas.</p>
-
-        <div class="highlight-box">
-            <strong>Detalle del Ticket de Venta (Ejemplo):</strong><br>
-            • <strong>Mesa:</strong> 04 (Salón Principal)<br>
-            • <strong>Mesero:</strong> Carlos M.
+<div class="nexa-dashboard">
+  <div class="pos-grid">
+    <div class="menu-panel">
+      <div class="panel-title">
+        <div class="panel-title-left">
+          <span>🐉 Nexa<span>POS</span> · Punto de Venta</span>
         </div>
-
-        <h3>Detalle de los Pedidos</h3>
-        <ul>
-            <li><strong>Pedido 1: Lomito con Vegetales (Base con Nota)</strong><br>Variante: Arroz Blanco (+L0) <em>(Incluido por defecto)</em> | Complemento: Ninguno | Nota: <em>"Bien jugoso"</em><br><strong>Subtotal: L275.00</strong></li>
-            
-            <li><strong>Pedido 2: Lomito con Vegetales (Variante Modificada, Complemento y Nota)</strong><br>Variante: Arroz Chino (+L75) | Complemento: Extra Carne (+L50) | Nota: <em>"Con poca salsa"</em><br><strong>Subtotal: L400.00</strong></li>
-            
-            <li><strong>Pedido 3: Arroz Chino (Solo Complemento, Sin Nota)</strong><br>Variante: No aplica | Complemento: Extra Camarón (+L75) | Nota: Ninguna<br><strong>Subtotal: L205.00</strong></li>
-            
-            <li><strong>Pedido 4: Chop Suey (Solo Nota, Sin Complemento)</strong><br>Variante: No aplica | Complemento: Ninguno | Nota: <em>"Empacar para llevar, salsa de soya aparte"</em><br><strong>Subtotal: L130.00</strong></li>
-            
-            <li><strong>Pedido 5: Pollo Agridulce (Variante Modificada, Sin Nota, Sin Complemento)</strong><br>Variante: Arroz Chino (+L75) | Complemento: Ninguno | Nota: Ninguna<br><strong>Subtotal: L325.00</strong></li>
-            
-            <li><strong>Pedido 6: Combo Ejecutivo (Producto Compuesto, Con Variantes Base)</strong><br>Componentes: Arroz Chino, Coca Cola Peq (+L0), Flan.<br><strong>Subtotal: L299.00</strong></li>
-            
-            <li><strong>Pedido 7: Combo Ejecutivo (Producto Compuesto, Con Modificaciones Internas y Notas)</strong><br>Componentes: Arroz Chino con Extra Pollo (+L40), Coca Cola Grande (+L30), Flan. | Nota: <em>"El flan que sea para el final"</em><br><strong>Subtotal: L369.00</strong></li>
-            
-            <li><strong>Pedido 8: Wantán Frito (Producto Simple - Sin Complementos, Sin Notas)</strong><br>Categoría: Entradas | Variante/Complemento/Nota: Ninguno<br><strong>Subtotal: L95.00</strong></li>
-            
-            <li><strong>Pedido 9: Sopa Wonton Especial (Producto Simple - Solo Nota de Cocina)</strong><br>Categoría: Sopas | Nota: <em>"Sin cebollín"</em><br><strong>Subtotal: L160.00</strong></li>
-            
-            <li><strong>Pedido 10: Té Frío Grande (Bebida con Variante de Tamaño, Sin Nota)</strong><br>Categoría: Bebidas | Variante: Tamaño Grande (+L30)<br><strong>Subtotal: L75.00</strong></li>
-        </ul>
-
-        <h3>Vista de Impresión del Recibo (POS)</h3>
-        <div class="ticket-preview">======================================================
-               RESTAURANTE GRAN DRAGÓN
-                  NexaPOS Emulación
-======================================================
-Mesa: 04          Mesero: Carlos M.     Pax: 4
-------------------------------------------------------
-Cant. DESCRIPCIÓN                         TOTAL (L)
-------------------------------------------------------
- 1    Lomito con Vegetales                 275.00
-      └─ [Var]: Arroz Blanco (+0)
-      └─ [Nota]: Bien jugoso
- 1    Lomito con Vegetales                 400.00
-      └─ [Var]: Arroz Chino (+75)
-      └─ [Comp]: Extra Carne (+50)
-      └─ [Nota]: Con poca salsa
- 1    Arroz Chino                          205.00
-      └─ [Comp]: Extra Camarón (+75)
- 1    Chop Suey                            130.00
-      └─ [Nota]: Empacar para llevar...
- 1    Pollo Agridulce                      325.00
-      └─ [Var]: Arroz Chino (+75)
- 1    Combo Ejecutivo                      299.00
-      └─ Incluye: Arroz, Coca Cola Peq, Flan
- 1    Combo Ejecutivo                      369.00
-      └─ [Var]: Coca Cola Grande (+30)
-      └─ [Comp]: Extra Pollo en Arroz (+40)
-      └─ [Nota]: El flan que sea para el final
- 1    Wantán Frito                          95.00
- 1    Sopa Wonton Especial                 160.00
-      └─ [Nota]: Sin cebollín
- 1    Té Frío                              75.00
-      └─ [Var]: Tamaño Grande (+30)
-------------------------------------------------------
-SUBTOTAL:                              L 2,333.00
-I.S.V. (15% Incluido):                   L 349.95
-TOTAL A PAGAR:                         L 2,333.00
-======================================================
-            ¡Gracias por su Preferencia!</div>
+        <button class="categorias-center-btn" id="categoriasCenterBtn">
+          ☰ <span>Categorías</span>
+        </button>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <button class="fullscreen-btn" id="fullscreenBtn" title="Pantalla completa (F11)">⛶</button>
+          <button class="hamburger-mobile-btn" id="hamburgerMobileBtn">☰</button>
+        </div>
+      </div>
+      <div class="filtro-wrapper">
+        <div class="filtro-header">
+          <div class="filtro-izquierda">
+            <div class="filtro-titulo">📌 FILTRAR PRODUCTOS</div>
+            <div class="buscador-container">
+              <input type="text" class="buscador-input" id="buscadorInput" placeholder="🔍 Buscar producto por nombre...">
+            </div>
+          </div>
+          <div class="botones-modulos" id="botonesModulos">
+            <button class="btn-modulo" data-modulo="productos">📦 Productos</button>
+            <button class="btn-modulo" data-modulo="clientes">👥 Clientes</button>
+            <button class="btn-modulo" data-modulo="creditos">💰 Créditos</button>
+            <button class="btn-modulo" data-modulo="reservas">📅 Reservas</button>
+            <button class="btn-modulo" data-modulo="caja">🧾 Caja</button>
+          </div>
+          <button class="modulos-hamburger-btn" id="modulosHamburgerBtn">☰</button>
+        </div>
+      </div>
+      <div class="productos-container" id="productosContainer"></div>
     </div>
 
-    <hr>
-
-    <div id="section5">
-        <h2>5. Conclusión de Arquitectura</h2>
-        <ul>
-            <li>El sistema puede calcular dinámicamente cualquier plato combinando un <strong>Precio Base</strong> con <strong>N Modificadores (Variantes)</strong> y <strong>N Adicionales (Complementos)</strong>, sin importar si están solos, mezclados o embebidos dentro de un combo estructurado.</li>
-            <li>Al mantener la base de datos normalizada con relaciones de muchos a muchos (N:M), la pantalla del POS opera con total fluidez, permitiendo al cajero armar pedidos altamente personalizados a la velocidad que exige el servicio gastronómico en vivo.</li>
-        </ul>
+    <div class="cart-panel">
+      <div class="cart-header">
+        <div class="cart-header-top">
+          <h3>🛒 Pedido actual</h3>
+          <div class="cajero-derecha">
+            <span class="cajero-icon">👤</span>
+            <span>Cajero: Jorge Lemus</span>
+          </div>
+        </div>
+        <div class="modo-pedido" id="modoPedidoContainer">
+          <button data-modo="para_llevar" class="modo-opcion activo">📦 Para Llevar</button>
+          <button data-modo="comer_aqui" class="modo-opcion">🍽️ Comer Aquí</button>
+          <button data-modo="domicilio" class="modo-opcion">🏠 A Domicilio</button>
+          <button data-modo="reserva" class="modo-opcion">📅 Reserva</button>
+        </div>
+        <div id="camposDinamicos"></div>
+      </div>
+      <div class="cart-items" id="cartList"><div style="padding:20px; text-align:center; color:gray;">Sin productos</div></div>
+      <div class="cart-footer">
+        <div class="total-row"><span>💰 TOTAL</span><span id="cartTotal">L 0.00</span></div>
+        <button class="btn-pagar" id="pagarBtn">🧾 GENERAR RECIBO</button>
+        <button class="btn-limpiar" id="limpiarCarrito">🗑️ Limpiar todo</button>
+      </div>
     </div>
+  </div>
+</div>
 
+<button class="scroll-top-btn" id="scrollTopBtn">↑</button>
+
+<div id="menuOverlay" class="menu-overlay">
+  <div class="sidebar-menu">
+    <div class="sidebar-header">
+      <span>📌 Categorías</span>
+      <button class="close-sidebar" id="closeSidebarBtn">✕</button>
+    </div>
+    <div class="sidebar-categorias" id="sidebarCategorias"></div>
+  </div>
+</div>
+
+<div id="modulosOverlay" class="modulos-overlay">
+  <div class="modulos-sidebar">
+    <div class="modulos-sidebar-header">
+      <span>📌 Módulos</span>
+      <button class="close-modulos-sidebar" id="closeModulosSidebarBtn">✕</button>
+    </div>
+    <div class="modulos-sidebar-botones">
+      <button class="modulos-sidebar-btn" data-modulo="productos">📦 Productos</button>
+      <button class="modulos-sidebar-btn" data-modulo="clientes">👥 Clientes</button>
+      <button class="modulos-sidebar-btn" data-modulo="creditos">💰 Créditos</button>
+      <button class="modulos-sidebar-btn" data-modulo="reservas">📅 Reservas</button>
+      <button class="modulos-sidebar-btn" data-modulo="caja">🧾 Caja</button>
+    </div>
+  </div>
+</div>
+
+<div id="modalRecibo" class="modal-backdrop" style="display:none;">
+  <div class="modal-card">
+    <div class="modal-header">🧾 FACTURA</div>
+    <div class="modal-body" id="reciboTexto" style="font-family: monospace; white-space: pre-wrap; background:#1e1e1e; color:#f0f0f0; margin:0;"></div>
+    <div class="modal-footer"><button class="btn-cancelar" id="closeModalBtn">Cerrar</button></div>
+  </div>
+</div>
+
+<script>
+  const categoriasInfo = [
+    { id: "todas", nombre: "📋 Todas las categorías" },
+    { id: "arroz", nombre: "🍚 Arroz Chino" },
+    { id: "chop", nombre: "🥬 Chop Suey" },
+    { id: "mixtos", nombre: "🍲 Mixtos" },
+    { id: "especialidades", nombre: "✨ Especialidades" },
+    { id: "promociones", nombre: "🎁 Promociones" },
+    { id: "bebidas", nombre: "🥤 Bebidas" },
+    { id: "adicionales", nombre: "🧾 Adicionales" }
+  ];
+
+  const iconoPorCategoria = { "arroz":"🍚","chop":"🥬","mixtos":"🍲","especialidades":"🔥","promociones":"🎁","bebidas":"🥤","adicionales":"🧾" };
+  const nombreCategoria = { "arroz":"Arroz Chino","chop":"Chop Suey","mixtos":"Mixtos","especialidades":"Especialidades","promociones":"Promociones","bebidas":"Bebidas","adicionales":"Adicionales" };
+
+  const productosDB = [
+    { id:1, nombre:"Arroz Chino Infantil", precioBase:100, categoriaId:"arroz", permiteComplementos:true, variantes:[] },
+    { id:2, nombre:"Arroz Chino Personal", precioBase:130, categoriaId:"arroz", permiteComplementos:true, variantes:[] },
+    { id:3, nombre:"Arroz Chino Familiar", precioBase:200, categoriaId:"arroz", permiteComplementos:true, variantes:[] },
+    { id:4, nombre:"Arroz Chino Grande", precioBase:270, categoriaId:"arroz", permiteComplementos:true, variantes:[] },
+    { id:5, nombre:"Arroz Chino Jumbo", precioBase:370, categoriaId:"arroz", permiteComplementos:true, variantes:[] },
+    { id:6, nombre:"Arroz Chino Junior", precioBase:500, categoriaId:"arroz", permiteComplementos:true, variantes:[] },
+    { id:7, nombre:"Arroz Chino Mega", precioBase:750, categoriaId:"arroz", permiteComplementos:true, variantes:[] },
+    { id:8, nombre:"Chop Suey Infantil", precioBase:100, categoriaId:"chop", permiteComplementos:true, variantes:[] },
+    { id:9, nombre:"Chop Suey Personal", precioBase:130, categoriaId:"chop", permiteComplementos:true, variantes:[] },
+    { id:10, nombre:"Chop Suey Familiar", precioBase:200, categoriaId:"chop", permiteComplementos:true, variantes:[] },
+    { id:11, nombre:"Chop Suey Grande", precioBase:270, categoriaId:"chop", permiteComplementos:true, variantes:[] },
+    { id:12, nombre:"Chop Suey Jumbo", precioBase:370, categoriaId:"chop", permiteComplementos:true, variantes:[] },
+    { id:13, nombre:"Chop Suey Junior", precioBase:500, categoriaId:"chop", permiteComplementos:true, variantes:[] },
+    { id:14, nombre:"Chop Suey Mega", precioBase:750, categoriaId:"chop", permiteComplementos:true, variantes:[] },
+    { id:15, nombre:"Mixto Infantil", precioBase:200, categoriaId:"mixtos", permiteComplementos:true, variantes:[] },
+    { id:16, nombre:"Mixto Personal", precioBase:130, categoriaId:"mixtos", permiteComplementos:true, variantes:[] },
+    { id:17, nombre:"Mixto Familiar", precioBase:200, categoriaId:"mixtos", permiteComplementos:true, variantes:[] },
+    { id:18, nombre:"Mixto Grande", precioBase:270, categoriaId:"mixtos", permiteComplementos:true, variantes:[] },
+    { id:19, nombre:"Mixto Jumbo", precioBase:370, categoriaId:"mixtos", permiteComplementos:true, variantes:[] },
+    { id:20, nombre:"Mixto Junior", precioBase:500, categoriaId:"mixtos", permiteComplementos:true, variantes:[] },
+    { id:21, nombre:"Mixto Mega", precioBase:750, categoriaId:"mixtos", permiteComplementos:true, variantes:[] },
+    { id:22, nombre:"Lomito Con Vegetales", precioBase:275, categoriaId:"especialidades", permiteComplementos:true, varianteTipo:"especialidad" },
+    { id:23, nombre:"Pollo Agridulce", precioBase:275, categoriaId:"especialidades", permiteComplementos:true, varianteTipo:"especialidad" },
+    { id:24, nombre:"Kung Pao chicken", precioBase:275, categoriaId:"especialidades", permiteComplementos:true, varianteTipo:"especialidad" },
+    { id:25, nombre:"Econo China House", precioBase:150, categoriaId:"especialidades", permiteComplementos:true, varianteTipo:"econo" },
+    { id:26, nombre:"Combo Para 4", precioBase:750, categoriaId:"promociones", permiteComplementos:true, variantes:[] },
+    { id:27, nombre:"Combo Para 6", precioBase:950, categoriaId:"promociones", permiteComplementos:true, variantes:[] },
+    { id:28, nombre:"Combo Para 10", precioBase:1500, categoriaId:"promociones", permiteComplementos:true, variantes:[] },
+    { id:29, nombre:"Portatil Personal", precioBase:30, categoriaId:"bebidas", permiteComplementos:false, variantes:[] },
+    { id:30, nombre:"Agua Embotellada", precioBase:20, categoriaId:"bebidas", permiteComplementos:false, variantes:[] },
+    { id:31, nombre:"Agua En Bolsa", precioBase:5, categoriaId:"bebidas", permiteComplementos:false, variantes:[] },
+    { id:32, nombre:"Fresco 1.1 Lts.", precioBase:45, categoriaId:"bebidas", permiteComplementos:false, variantes:[] },
+    { id:33, nombre:"Fresco 1.5 Lts.", precioBase:60, categoriaId:"bebidas", permiteComplementos:false, variantes:[] },
+    { id:34, nombre:"Fresco 2 Lts.", precioBase:75, categoriaId:"bebidas", permiteComplementos:false, variantes:[] },
+    { id:35, nombre:"Fresco 3 Lts.", precioBase:100, categoriaId:"bebidas", permiteComplementos:false, variantes:[] },
+    { id:36, nombre:"Pan Molde", precioBase:5, categoriaId:"adicionales", permiteComplementos:false, variantes:[] },
+    { id:37, nombre:"Plato 8 Desechable", precioBase:2, categoriaId:"adicionales", permiteComplementos:false, variantes:[] },
+    { id:38, nombre:"Tenedor Desechable", precioBase:1, categoriaId:"adicionales", permiteComplementos:false, variantes:[] },
+    { id:39, nombre:"Vaso Desechable", precioBase:2, categoriaId:"adicionales", permiteComplementos:false, variantes:[] },
+    { id:40, nombre:"Jarra Con Hielo", precioBase:20, categoriaId:"adicionales", permiteComplementos:false, variantes:[] },
+    { id:41, nombre:"Bold Arroz Blanco", precioBase:50, categoriaId:"adicionales", permiteComplementos:false, variantes:[] }
+  ];
+
+  const complementosCatalogo = [
+    { id:"c1", nombre:"6 Camarones", precio:50 },
+    { id:"c2", nombre:"14 Camarones", precio:100 },
+    { id:"c3", nombre:"Carne Extra", precio:30 },
+    { id:"c4", nombre:"Pollo Extra", precio:30 },
+    { id:"c5", nombre:"Extra Vegetales", precio:30 },
+    { id:"c6", nombre:"Brocoli Extra", precio:30 }
+  ];
+
+  const variantesEspecialidades = [{ nombre:"Arroz Blanco", incremento:0 },{ nombre:"Arroz Chino", incremento:75 }];
+  const econoAcompanamiento = [{ nombre:"Arroz Blanco", incremento:0 },{ nombre:"Arroz Chino", incremento:75 }];
+  const econoProteina = [{ nombre:"Con Pollo", incremento:0 },{ nombre:"Con Carne", incremento:0 },{ nombre:"Con Chop Suey", incremento:0 }];
+
+  let filtroActivo = "todas";
+  let busquedaTexto = "";
+  let carrito = [];
+  let modoPedido = "para_llevar";
+  let ubicacionSeleccionada = "Mesa 1";
+  let clienteNombre = "";
+  let clienteTelefono = "";
+  let clienteDireccion = "";
+  let reservaFechaHora = "";
+
+  function formatearFechaHoraHN(datetimeStr) {
+    if (!datetimeStr) return "";
+    const fecha = new Date(datetimeStr);
+    if (isNaN(fecha.getTime())) return "";
+    const dias = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+    const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+    const diaSemana = dias[fecha.getDay()];
+    const dia = fecha.getDate();
+    const mes = meses[fecha.getMonth()];
+    const año = fecha.getFullYear();
+    let horas = fecha.getHours();
+    const minutos = fecha.getMinutes().toString().padStart(2, '0');
+    const ampm = horas >= 12 ? 'PM' : 'AM';
+    horas = horas % 12 || 12;
+    return `${diaSemana} ${dia} de ${mes} de ${año}, ${horas}:${minutos} ${ampm}`;
+  }
+
+  function obtenerProductosFiltrados() {
+    let productos = filtroActivo === "todas" ? productosDB : productosDB.filter(p => p.categoriaId === filtroActivo);
+    if (busquedaTexto.trim()) {
+      const searchLower = busquedaTexto.toLowerCase().trim();
+      productos = productos.filter(p => p.nombre.toLowerCase().includes(searchLower));
+    }
+    return productos;
+  }
+
+  function obtenerProductosAgrupados() {
+    const productos = obtenerProductosFiltrados();
+    if (filtroActivo !== "todas") return { [filtroActivo]: productos };
+    const agrupados = {};
+    productos.forEach(prod => { if (!agrupados[prod.categoriaId]) agrupados[prod.categoriaId] = []; agrupados[prod.categoriaId].push(prod); });
+    return agrupados;
+  }
+
+  function agregarProductoDirecto(prod) {
+    let precioFinal = prod.precioBase;
+    let variantesSeleccionadas = [];
+    let varianteTipo = prod.varianteTipo;
+    
+    if (varianteTipo === "especialidad") {
+      const varianteDefault = variantesEspecialidades.find(v => v.incremento === 0) || variantesEspecialidades[0];
+      variantesSeleccionadas.push({ ...varianteDefault });
+    } else if (varianteTipo === "econo") {
+      const acompDefault = econoAcompanamiento.find(v => v.incremento === 0) || econoAcompanamiento[0];
+      const proteinaDefault = econoProteina[0];
+      variantesSeleccionadas.push({ ...acompDefault }, { ...proteinaDefault });
+    }
+    
+    const nuevoItem = {
+      id: Date.now() + Math.random(),
+      productId: prod.id,
+      productName: prod.nombre,
+      basePrice: prod.precioBase,
+      variantes: variantesSeleccionadas.length > 0 ? variantesSeleccionadas : null,
+      varianteTipo: varianteTipo || null,
+      complementos: [],
+      nota: "",
+      total: precioFinal
+    };
+    carrito.push(nuevoItem);
+    renderCarrito();
+  }
+
+  function editarProducto(item, idx) {
+    const productoOriginal = productosDB.find(p => p.id === item.productId);
+    if (!productoOriginal) return;
+    
+    let varianteSeleccionada = null;
+    let acompSeleccionado = null;
+    let proteinaSeleccionada = null;
+    let complementosSeleccionadosIds = [];
+    let notaActual = item.nota || "";
+    
+    if (item.variantes) {
+      if (item.varianteTipo === "especialidad" && item.variantes[0]) {
+        varianteSeleccionada = item.variantes[0].nombre;
+      } else if (item.varianteTipo === "econo") {
+        if (item.variantes[0]) acompSeleccionado = item.variantes[0].nombre;
+        if (item.variantes[1]) proteinaSeleccionada = item.variantes[1].nombre;
+      }
+    }
+    if (item.complementos) {
+      complementosSeleccionadosIds = item.complementos.map(c => {
+        const found = complementosCatalogo.find(cat => cat.nombre === c.nombre);
+        return found ? found.id : null;
+      }).filter(id => id);
+    }
+    
+    const modalDiv = document.createElement("div");
+    modalDiv.className = "modal-backdrop";
+    let contenidoHTML = `<div class="modal-card"><div class="modal-header">✏️ Editar: ${item.productName}</div><div class="modal-body">`;
+    
+    if (productoOriginal.varianteTipo === "especialidad") {
+      contenidoHTML += `<div><strong>🍚 Acompañamiento (elige uno):</strong></div><div class="complementos-grid" id="variantesGrupo">`;
+      variantesEspecialidades.forEach(v => {
+        const selectedAttr = (varianteSeleccionada === v.nombre) ? 'selected' : '';
+        contenidoHTML += `<button data-var="${v.nombre}" data-inc="${v.incremento}" class="btn-opcion ${selectedAttr}">${v.nombre} ${v.incremento > 0 ? `+L${v.incremento}` : "(incluido)"}</button>`;
+      });
+      contenidoHTML += `</div>`;
+    } else if (productoOriginal.varianteTipo === "econo") {
+      contenidoHTML += `<div><strong>🥣 Acompañamiento base:</strong></div><div class="complementos-grid" id="acompanamientoGrupo">`;
+      econoAcompanamiento.forEach(v => {
+        const selectedAttr = (acompSeleccionado === v.nombre) ? 'selected' : '';
+        contenidoHTML += `<button data-acomp="${v.nombre}" data-inc="${v.incremento}" class="btn-opcion ${selectedAttr}">${v.nombre} ${v.incremento > 0 ? `+L${v.incremento}` : ""}</button>`;
+      });
+      contenidoHTML += `</div><div style="margin-top:12px;"><strong>🍗 Proteína (elige una):</strong></div><div class="complementos-grid" id="proteinaGrupo">`;
+      econoProteina.forEach(p => {
+        const selectedAttr = (proteinaSeleccionada === p.nombre) ? 'selected' : '';
+        contenidoHTML += `<button data-prot="${p.nombre}" class="btn-opcion ${selectedAttr}">${p.nombre}</button>`;
+      });
+      contenidoHTML += `</div>`;
+    }
+    
+    if (productoOriginal.permiteComplementos !== false && productoOriginal.categoriaId !== "adicionales") {
+      contenidoHTML += `<hr><div><strong>🧂 Complementos (extras - selección múltiple):</strong></div><div class="complementos-grid" id="complementosGrupo">`;
+      complementosCatalogo.forEach(c => {
+        const selectedAttr = complementosSeleccionadosIds.includes(c.id) ? 'selected' : '';
+        contenidoHTML += `<button data-comp-id="${c.id}" data-comp-nom="${c.nombre}" data-comp-precio="${c.precio}" class="btn-opcion ${selectedAttr}">${c.nombre} +L${c.precio}</button>`;
+      });
+      contenidoHTML += `</div>`;
+    }
+    
+    contenidoHTML += `<div><input type="text" id="notaModal" class="nota-input-modal" placeholder="✍️ Nota especial (opcional)" value="${notaActual.replace(/"/g, '&quot;')}"></div>`;
+    contenidoHTML += `</div><div class="modal-footer"><button class="btn-cancelar" id="cancelarModal">Cancelar</button><button class="btn-confirmar" id="confirmarModal">💾 Guardar cambios</button></div></div>`;
+    modalDiv.innerHTML = contenidoHTML;
+    document.body.appendChild(modalDiv);
+    
+    let currentVariante = varianteSeleccionada ? variantesEspecialidades.find(v => v.nombre === varianteSeleccionada) : null;
+    let currentAcomp = acompSeleccionado ? econoAcompanamiento.find(v => v.nombre === acompSeleccionado) : null;
+    let currentProteina = proteinaSeleccionada ? econoProteina.find(p => p.nombre === proteinaSeleccionada) : null;
+    let currentComplementos = [...complementosSeleccionadosIds];
+    
+    if (productoOriginal.varianteTipo === "especialidad") {
+      const btns = modalDiv.querySelectorAll("[data-var]");
+      btns.forEach(btn => {
+        btn.onclick = () => {
+          btns.forEach(b => b.classList.remove("selected"));
+          btn.classList.add("selected");
+          currentVariante = { nombre: btn.getAttribute("data-var"), incremento: parseInt(btn.getAttribute("data-inc")) };
+        };
+      });
+    } else if (productoOriginal.varianteTipo === "econo") {
+      const btnsA = modalDiv.querySelectorAll("[data-acomp]");
+      btnsA.forEach(btn => {
+        btn.onclick = () => {
+          btnsA.forEach(b => b.classList.remove("selected"));
+          btn.classList.add("selected");
+          currentAcomp = { nombre: btn.getAttribute("data-acomp"), incremento: parseInt(btn.getAttribute("data-inc")) };
+        };
+      });
+      const btnsP = modalDiv.querySelectorAll("[data-prot]");
+      btnsP.forEach(btn => {
+        btn.onclick = () => {
+          btnsP.forEach(b => b.classList.remove("selected"));
+          btn.classList.add("selected");
+          currentProteina = { nombre: btn.getAttribute("data-prot"), incremento: 0 };
+        };
+      });
+    }
+    
+    const compContainer = modalDiv.querySelector("#complementosGrupo");
+    if (compContainer) {
+      const btnsComp = compContainer.querySelectorAll("[data-comp-id]");
+      btnsComp.forEach(btn => {
+        btn.onclick = (e) => {
+          e.stopPropagation();
+          btn.classList.toggle("selected");
+          const id = btn.getAttribute("data-comp-id");
+          if (btn.classList.contains("selected")) {
+            if (!currentComplementos.includes(id)) currentComplementos.push(id);
+          } else {
+            currentComplementos = currentComplementos.filter(cid => cid !== id);
+          }
+        };
+      });
+    }
+    
+    modalDiv.querySelector("#confirmarModal").onclick = () => {
+      let precioFinal = productoOriginal.precioBase;
+      let variantesTexto = [];
+      
+      if (productoOriginal.varianteTipo === "especialidad") {
+        if (!currentVariante) { alert("Debes seleccionar un acompañamiento"); return; }
+        precioFinal += currentVariante.incremento;
+        variantesTexto.push(currentVariante);
+      } else if (productoOriginal.varianteTipo === "econo") {
+        if (!currentAcomp) { alert("Selecciona acompañamiento"); return; }
+        if (!currentProteina) { alert("Selecciona tipo de proteína"); return; }
+        precioFinal += currentAcomp.incremento;
+        variantesTexto.push(currentAcomp, currentProteina);
+      }
+      
+      const complementosSeleccionados = currentComplementos.map(id => complementosCatalogo.find(c => c.id === id)).filter(c => c);
+      complementosSeleccionados.forEach(c => precioFinal += c.precio);
+      const nota = modalDiv.querySelector("#notaModal").value.trim();
+      
+      carrito[idx] = {
+        ...carrito[idx],
+        variantes: variantesTexto.length ? variantesTexto : null,
+        complementos: complementosSeleccionados.map(c => ({ nombre: c.nombre, precio: c.precio })),
+        nota: nota,
+        total: precioFinal
+      };
+      renderCarrito();
+      modalDiv.remove();
+    };
+    modalDiv.querySelector("#cancelarModal").onclick = () => modalDiv.remove();
+  }
+
+  function renderSidebarCategorias() {
+    const sidebarContainer = document.getElementById("sidebarCategorias");
+    sidebarContainer.innerHTML = "";
+    categoriasInfo.forEach(cat => {
+      const btn = document.createElement("button");
+      btn.className = `sidebar-categoria ${filtroActivo === cat.id ? "activa" : ""}`;
+      btn.innerText = cat.nombre;
+      btn.onclick = () => { filtroActivo = cat.id; renderSidebarCategorias(); renderProductos(); document.getElementById("menuOverlay").classList.remove("active"); };
+      sidebarContainer.appendChild(btn);
+    });
+  }
+
+  function renderProductos() {
+    const container = document.getElementById("productosContainer");
+    const agrupados = obtenerProductosAgrupados();
+    if (Object.keys(agrupados).length === 0) {
+      container.innerHTML = "<div style='padding:40px; text-align:center; color:gray;'>No hay productos que coincidan con tu búsqueda</div>";
+      return;
+    }
+    let html = "";
+    for (const [catId, productos] of Object.entries(agrupados)) {
+      const nombreCat = nombreCategoria[catId] || catId;
+      const icono = iconoPorCategoria[catId] || "🍽️";
+      html += `<div class="categoria-grupo"><div class="categoria-header"><span>${icono}</span><span>${nombreCat}</span><span style="font-size:0.7rem; color:#6c757d;">(${productos.length} productos)</span></div><div class="productos-grid" id="grid-${catId}"></div></div>`;
+    }
+    container.innerHTML = html;
+    for (const [catId, productos] of Object.entries(agrupados)) {
+      const gridContainer = document.getElementById(`grid-${catId}`);
+      if (gridContainer) {
+        productos.forEach(prod => {
+          const card = document.createElement("div");
+          card.className = "producto-card";
+          const icono = iconoPorCategoria[prod.categoriaId] || "🍽️";
+          card.innerHTML = `<div class="producto-imagen">${icono}</div><div class="producto-nombre">${prod.nombre}</div><div class="producto-precio">L ${prod.precioBase}</div>`;
+          card.onclick = (e) => { e.stopPropagation(); agregarProductoDirecto(prod); };
+          gridContainer.appendChild(card);
+        });
+      }
+    }
+  }
+
+  function renderCarrito() {
+    const container = document.getElementById("cartList");
+    const totalSpan = document.getElementById("cartTotal");
+    if (carrito.length === 0) { container.innerHTML = "<div style='padding:20px; text-align:center; color:gray;'>Sin productos</div>"; totalSpan.innerText = "L 0.00"; return; }
+    let html = "", total = 0;
+    carrito.forEach((item, idx) => {
+      total += item.total;
+      let mods = "";
+      if (item.variantes) item.variantes.forEach(v => { mods += `<div class="item-mod">🎯 ${v.nombre} ${v.incremento > 0 ? `(+L${v.incremento})` : ""}</div>`; });
+      if (item.complementos && item.complementos.length) mods += `<div class="item-mod">🧂 ${item.complementos.map(c => `${c.nombre} +L${c.precio}`).join(", ")}</div>`;
+      if (item.nota) mods += `<div class="item-mod">📝 ${item.nota}</div>`;
+      html += `<div class="cart-item"><div class="item-title"><span>${item.productName}</span><span><strong>L ${item.total.toFixed(2)}</strong></span></div>${mods}<div class="item-actions"><button class="edit-btn" data-idx="${idx}">✏️ Editar</button><button class="remove-btn" data-idx="${idx}">🗑️ Eliminar</button></div></div>`;
+    });
+    container.innerHTML = html;
+    totalSpan.innerText = `L ${total.toFixed(2)}`;
+    document.querySelectorAll(".edit-btn").forEach(btn => { btn.onclick = (e) => { e.stopPropagation(); const idx = parseInt(btn.dataset.idx); editarProducto(carrito[idx], idx); }; });
+    document.querySelectorAll(".remove-btn").forEach(btn => { btn.onclick = (e) => { e.stopPropagation(); carrito.splice(parseInt(btn.dataset.idx), 1); renderCarrito(); }; });
+  }
+
+  function actualizarCamposDinamicos() {
+    const container = document.getElementById("camposDinamicos");
+    if (modoPedido === "para_llevar") {
+      container.innerHTML = `
+        <div class="campos-cliente">
+          <div class="campo-fila"><span class="campo-etiqueta">Nombre:</span><input type="text" id="clienteNombre" class="campo-input" placeholder="Nombre del cliente" value="${clienteNombre}"></div>
+          <div class="campo-fila"><span class="campo-etiqueta">Teléfono:</span><input type="tel" id="clienteTelefono" class="campo-input" placeholder="Teléfono" value="${clienteTelefono}"></div>
+        </div>
+      `;
+      document.getElementById("clienteNombre")?.addEventListener("input", (e) => clienteNombre = e.target.value);
+      document.getElementById("clienteTelefono")?.addEventListener("input", (e) => clienteTelefono = e.target.value);
+    } else if (modoPedido === "domicilio") {
+      container.innerHTML = `
+        <div class="campos-cliente">
+          <div class="campo-fila"><span class="campo-etiqueta">Nombre:</span><input type="text" id="clienteNombre" class="campo-input" placeholder="Nombre del cliente" value="${clienteNombre}"></div>
+          <div class="campo-fila"><span class="campo-etiqueta">Teléfono:</span><input type="tel" id="clienteTelefono" class="campo-input" placeholder="Teléfono" value="${clienteTelefono}"></div>
+          <div class="campo-fila"><span class="campo-etiqueta">Dirección:</span><input type="text" id="clienteDireccion" class="campo-input" placeholder="Dirección de entrega" value="${clienteDireccion}"></div>
+        </div>
+      `;
+      document.getElementById("clienteNombre")?.addEventListener("input", (e) => clienteNombre = e.target.value);
+      document.getElementById("clienteTelefono")?.addEventListener("input", (e) => clienteTelefono = e.target.value);
+      document.getElementById("clienteDireccion")?.addEventListener("input", (e) => clienteDireccion = e.target.value);
+    } else if (modoPedido === "comer_aqui") {
+      container.innerHTML = `
+        <div class="campos-cliente">
+          <div class="campo-fila"><span class="campo-etiqueta">Mesa:</span><select id="mesaSelector" class="mesa-selector"><option value="Mesa 1">Mesa 1</option><option value="Mesa 2">Mesa 2</option><option value="Mesa 3">Mesa 3</option><option value="Mesa 4">Mesa 4</option><option value="Mesa 5">Mesa 5</option><option value="Mesa 6">Mesa 6</option><option value="Mesa 7">Mesa 7</option><option value="Silla en Barra">Silla en Barra</option></select></div>
+        </div>
+      `;
+      const sel = document.getElementById("mesaSelector");
+      if (sel) sel.onchange = (e) => ubicacionSeleccionada = e.target.value;
+    } else if (modoPedido === "reserva") {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const defaultDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+      if (!reservaFechaHora) reservaFechaHora = defaultDateTime;
+      
+      const fechaLegible = formatearFechaHoraHN(reservaFechaHora);
+      
+      container.innerHTML = `
+        <div class="campos-cliente">
+          <div class="campo-fila"><span class="campo-etiqueta">Nombre:</span><input type="text" id="clienteNombre" class="campo-input" placeholder="Nombre del cliente" value="${clienteNombre}"></div>
+          <div class="campo-fila"><span class="campo-etiqueta">Teléfono:</span><input type="tel" id="clienteTelefono" class="campo-input" placeholder="Teléfono" value="${clienteTelefono}"></div>
+          <div class="campo-fila"><span class="campo-etiqueta">Fecha/Hora:</span>
+            <div class="fecha-selector-wrapper">
+              <span class="fecha-texto" id="fechaTexto">${fechaLegible}</span>
+              <button type="button" class="fecha-icono-btn" id="abrirSelectorFechaBtn" title="Seleccionar fecha y hora">📅</button>
+              <input type="datetime-local" id="selectorFechaHora" style="display: none;">
+            </div>
+          </div>
+        </div>
+      `;
+      document.getElementById("clienteNombre")?.addEventListener("input", (e) => clienteNombre = e.target.value);
+      document.getElementById("clienteTelefono")?.addEventListener("input", (e) => clienteTelefono = e.target.value);
+      
+      const selectorInput = document.getElementById("selectorFechaHora");
+      const fechaTexto = document.getElementById("fechaTexto");
+      const abrirBtn = document.getElementById("abrirSelectorFechaBtn");
+      
+      if (selectorInput && fechaTexto && abrirBtn) {
+        selectorInput.value = reservaFechaHora;
+        abrirBtn.onclick = () => selectorInput.showPicker();
+        selectorInput.onchange = (e) => {
+          reservaFechaHora = e.target.value;
+          fechaTexto.textContent = formatearFechaHoraHN(reservaFechaHora);
+        };
+      }
+    } else {
+      container.innerHTML = "";
+    }
+  }
+
+  function generarRecibo() {
+    if (!carrito.length) return alert("No hay pedidos");
+    let modoTexto = "", ubicacionTexto = "";
+    switch(modoPedido) {
+      case "para_llevar": 
+        modoTexto = "PARA LLEVAR"; 
+        ubicacionTexto = `Cliente: ${clienteNombre || "No especificado"} | Tel: ${clienteTelefono || "No especificado"}`;
+        break;
+      case "comer_aqui": 
+        modoTexto = "COMER AQUÍ"; 
+        ubicacionTexto = ubicacionSeleccionada;
+        break;
+      case "domicilio": 
+        modoTexto = "A DOMICILIO"; 
+        ubicacionTexto = `Cliente: ${clienteNombre || "No especificado"} | Tel: ${clienteTelefono || "No especificado"} | Dirección: ${clienteDireccion || "No especificada"}`;
+        break;
+      case "reserva": 
+        modoTexto = "RESERVA"; 
+        const fechaFormateada = reservaFechaHora ? formatearFechaHoraHN(reservaFechaHora) : "No especificada";
+        ubicacionTexto = `Cliente: ${clienteNombre || "No especificado"} | Tel: ${clienteTelefono || "No especificado"} | Fecha/Hora: ${fechaFormateada}`;
+        break;
+    }
+    let ticket = `======================================================\n       RESTAURANTE GRAN DRAGÓN\n          NexaPOS - Punto de Venta\n======================================================\nModo: ${modoTexto}\n${ubicacionTexto}\nCajero: Jorge Lemus\n------------------------------------------------------\nCant. DESCRIPCIÓN                         TOTAL (L)\n------------------------------------------------------\n`;
+    let subtotal = 0;
+    carrito.forEach(item => { subtotal += item.total; ticket += ` 1    ${item.productName.padEnd(30,' ')} ${item.total.toFixed(2).padStart(8,' ')}\n`; if (item.variantes) item.variantes.forEach(v => ticket += `      └─ [Var]: ${v.nombre} ${v.incremento > 0 ? `(+L${v.incremento})` : ""}\n`); if (item.complementos && item.complementos.length) item.complementos.forEach(c => ticket += `      └─ [Comp]: ${c.nombre} (+L${c.precio})\n`); if (item.nota) ticket += `      └─ [Nota]: ${item.nota}\n`; });
+    ticket += `------------------------------------------------------\nSUBTOTAL:                              L ${subtotal.toFixed(2)}\nI.S.V. (15% Incluido):                   L ${(subtotal*0.15).toFixed(2)}\nTOTAL A PAGAR:                         L ${subtotal.toFixed(2)}\n======================================================\n            ¡Gracias por su Preferencia!`;
+    const modalRecibo = document.getElementById("modalRecibo");
+    const reciboDiv = document.getElementById("reciboTexto");
+    reciboDiv.innerHTML = `<pre style="font-family: monospace; white-space: pre-wrap; font-size:0.7rem; color:#f0f0f0; margin:0;">${ticket}</pre>`;
+    modalRecibo.style.display = "flex";
+    document.getElementById("closeModalBtn").onclick = () => modalRecibo.style.display = "none";
+  }
+
+  function initModoPedido() {
+    document.querySelectorAll(".modo-opcion").forEach(btn => { 
+      btn.onclick = () => { 
+        document.querySelectorAll(".modo-opcion").forEach(b => b.classList.remove("activo")); 
+        btn.classList.add("activo"); 
+        modoPedido = btn.dataset.modo; 
+        actualizarCamposDinamicos();
+      }; 
+    });
+  }
+
+  function initScrollTopButton() {
+    const scrollBtn = document.getElementById("scrollTopBtn");
+    window.addEventListener("scroll", () => { if (window.scrollY > 300) scrollBtn.classList.add("show"); else scrollBtn.classList.remove("show"); });
+    scrollBtn.addEventListener("click", () => { window.scrollTo({ top: 0, behavior: "smooth" }); });
+  }
+
+  function initHamburgerMenu() {
+    const centerBtn = document.getElementById("categoriasCenterBtn");
+    const mobileBtn = document.getElementById("hamburgerMobileBtn");
+    const menuOverlay = document.getElementById("menuOverlay");
+    const closeBtn = document.getElementById("closeSidebarBtn");
+    const openMenu = () => menuOverlay.classList.add("active");
+    const closeMenu = () => menuOverlay.classList.remove("active");
+    if (centerBtn) centerBtn.onclick = openMenu;
+    if (mobileBtn) mobileBtn.onclick = openMenu;
+    if (closeBtn) closeBtn.onclick = closeMenu;
+    menuOverlay.onclick = (e) => { if (e.target === menuOverlay) closeMenu(); };
+  }
+
+  function initModulosHamburger() {
+    const modulosBtn = document.getElementById("modulosHamburgerBtn");
+    const modulosOverlay = document.getElementById("modulosOverlay");
+    const closeBtn = document.getElementById("closeModulosSidebarBtn");
+    const openModulos = () => modulosOverlay.classList.add("active");
+    const closeModulos = () => modulosOverlay.classList.remove("active");
+    if (modulosBtn) modulosBtn.onclick = openModulos;
+    if (closeBtn) closeBtn.onclick = closeModulos;
+    modulosOverlay.onclick = (e) => { if (e.target === modulosOverlay) closeModulos(); };
+    
+    const moduloActions = {
+      productos: () => alert("📦 Módulo de Productos - Gestión de inventario y precios"),
+      clientes: () => alert("👥 Módulo de Clientes - Gestión de clientes y contactos"),
+      creditos: () => alert("💰 Módulo de Créditos - Administración de cuentas por cobrar"),
+      reservas: () => alert("📅 Módulo de Reservas - Gestión de reservaciones"),
+      caja: () => alert("🧾 Módulo de Caja - Corte de caja y movimientos")
+    };
+    
+    document.querySelectorAll(".btn-modulo").forEach(btn => {
+      const modulo = btn.getAttribute("data-modulo");
+      btn.onclick = () => { moduloActions[modulo](); };
+    });
+    
+    document.querySelectorAll(".modulos-sidebar-btn").forEach(btn => {
+      const modulo = btn.getAttribute("data-modulo");
+      btn.onclick = () => { moduloActions[modulo](); closeModulos(); };
+    });
+  }
+
+  function initFullscreen() {
+    const fullscreenBtn = document.getElementById("fullscreenBtn");
+    if (!fullscreenBtn) return;
+    function toggleFullscreen() {
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        const docEl = document.documentElement;
+        if (docEl.requestFullscreen) docEl.requestFullscreen();
+        else if (docEl.webkitRequestFullscreen) docEl.webkitRequestFullscreen();
+        else if (docEl.msRequestFullscreen) docEl.msRequestFullscreen();
+        fullscreenBtn.innerHTML = "✕";
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+        else if (document.msExitFullscreen) document.msExitFullscreen();
+        fullscreenBtn.innerHTML = "⛶";
+      }
+    }
+    fullscreenBtn.addEventListener("click", toggleFullscreen);
+    document.addEventListener("fullscreenchange", () => {
+      fullscreenBtn.innerHTML = (document.fullscreenElement || document.webkitFullscreenElement) ? "✕" : "⛶";
+    });
+  }
+
+  document.getElementById("pagarBtn").onclick = generarRecibo;
+  document.getElementById("limpiarCarrito").onclick = () => { carrito = []; renderCarrito(); };
+  window.onclick = (e) => { if (e.target === document.getElementById("modalRecibo")) document.getElementById("modalRecibo").style.display = "none"; };
+  document.getElementById("buscadorInput").addEventListener("input", (e) => { busquedaTexto = e.target.value; renderProductos(); });
+
+  function init() { renderSidebarCategorias(); renderProductos(); renderCarrito(); initModoPedido(); actualizarCamposDinamicos(); initHamburgerMenu(); initScrollTopButton(); initFullscreen(); initModulosHamburger(); }
+  init();
+</script>
 </body>
 </html>
