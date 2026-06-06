@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>NexaPOS | Punto de Venta - Selector Fecha/Hora Funcional</title>
+  <title>NexaPOS | Punto de Venta - Selector Fecha/Hora Nativo</title>
   <style>
     * {
       margin: 0;
@@ -517,35 +516,40 @@
     .campo-input::placeholder {
       color: rgba(255,255,255,0.5);
     }
-    .fecha-selector-wrapper {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+    /* Estilo para el input datetime-local */
+    .input-wrapper {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+    }
+    .datetime-input {
+      width: 100%;
       background: rgba(255,255,255,0.15);
       border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 4px;
-      padding: 4px 8px;
-    }
-    .fecha-texto {
-      flex: 1;
-      color: #f39c12;
+      padding: 6px 30px 6px 10px;
+      color: white;
       font-size: 0.7rem;
-      padding: 4px 0;
+      border-radius: 4px;
       cursor: pointer;
     }
-    .fecha-icono-btn {
-      background: none;
-      border: none;
+    .datetime-input:focus {
+      border-color: #f39c12;
+      outline: none;
+    }
+    .icon-calendar {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
       color: #f39c12;
       font-size: 1rem;
-      cursor: pointer;
-      padding: 4px 8px;
-      border-radius: 4px;
-      transition: all 0.2s;
     }
-    .fecha-icono-btn:hover {
-      background: rgba(255,255,255,0.2);
+    .fecha-texto-legible {
+      font-size: 0.65rem;
+      color: #f39c12;
+      margin-top: 4px;
+      padding-left: 0px;
     }
     .mesa-selector {
       flex: 1;
@@ -1289,35 +1293,25 @@
           <div class="campo-fila"><span class="campo-etiqueta">Nombre:</span><input type="text" id="clienteNombre" class="campo-input" placeholder="Nombre del cliente" value="${clienteNombre}"></div>
           <div class="campo-fila"><span class="campo-etiqueta">Teléfono:</span><input type="tel" id="clienteTelefono" class="campo-input" placeholder="Teléfono" value="${clienteTelefono}"></div>
           <div class="campo-fila"><span class="campo-etiqueta">Fecha/Hora:</span>
-            <div class="fecha-selector-wrapper">
-              <span class="fecha-texto" id="fechaTexto">${fechaLegible}</span>
-              <button type="button" class="fecha-icono-btn" id="abrirSelectorFechaBtn" title="Seleccionar fecha y hora">📅</button>
-              <input type="datetime-local" id="selectorFechaHora" style="display: none;">
+            <div class="input-wrapper">
+              <input type="datetime-local" id="fechaHoraInput" class="datetime-input" value="${reservaFechaHora}">
+              <span class="icon-calendar" onclick="document.getElementById('fechaHoraInput').showPicker()">📅</span>
             </div>
+            <div class="fecha-texto-legible" id="fechaLegible">${fechaLegible}</div>
           </div>
         </div>
       `;
       document.getElementById("clienteNombre")?.addEventListener("input", (e) => clienteNombre = e.target.value);
       document.getElementById("clienteTelefono")?.addEventListener("input", (e) => clienteTelefono = e.target.value);
       
-      const selectorInput = document.getElementById("selectorFechaHora");
-      const fechaTexto = document.getElementById("fechaTexto");
-      const abrirBtn = document.getElementById("abrirSelectorFechaBtn");
+      const fechaInput = document.getElementById("fechaHoraInput");
+      const fechaLegibleSpan = document.getElementById("fechaLegible");
       
-      if (selectorInput && fechaTexto && abrirBtn) {
-        selectorInput.value = reservaFechaHora;
-        
-        const actualizarDesdeSelector = () => {
-          reservaFechaHora = selectorInput.value;
-          fechaTexto.textContent = formatearFechaHoraHN(reservaFechaHora);
-        };
-        
-        abrirBtn.onclick = (e) => {
-          e.stopPropagation();
-          selectorInput.showPicker();
-        };
-        
-        selectorInput.onchange = actualizarDesdeSelector;
+      if (fechaInput && fechaLegibleSpan) {
+        fechaInput.addEventListener("change", (e) => {
+          reservaFechaHora = e.target.value;
+          fechaLegibleSpan.textContent = formatearFechaHoraHN(reservaFechaHora);
+        });
       }
     } else {
       container.innerHTML = "";
